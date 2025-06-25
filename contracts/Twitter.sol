@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-
 contract Twitter {
     
     // define owner variable
@@ -88,5 +87,16 @@ contract Twitter {
 
         // Emit the TweetUnliked event
         emit TweetUnliked(msg.sender, author, id, tweets[author][id].likes);
+    }
+
+    function getTotalLikes(address _author) external view returns (uint256) {
+        uint256 totalLikes;
+
+        // Loop over all the tweets 
+        for (uint i = 0; i < tweets[_author].length; i++) {
+            totalLikes += tweets[_author][i].likes;
+        }
+
+        return totalLikes;
     }
 }
