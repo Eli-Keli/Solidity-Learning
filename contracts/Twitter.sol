@@ -1,11 +1,14 @@
+
 // SPDX-License-Identifier: MIT
+pragma solidity 0.8.30;
 
-pragma solidity ^0.8.0;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Twitter {
-    
-    // define owner variable
-    address public owner;
+// 1️⃣ Import Ownable.sol contract from OpenZeppelin ✅
+// 2️⃣ Inherit Ownable Contract ✅
+// 3️⃣ Replace current onlyOwner ✅
+
+contract Twitter is Ownable(msg.sender) {
 
     // define our constant variable (CHANGED) -> constant
     uint16 public MAX_TWEET_LENGTH = 280;
@@ -26,17 +29,6 @@ contract Twitter {
     event TweetCreated(uint256 id, address author, string content, uint256 timestamp);
     event TweetLiked(address liker, address tweetAuthor, uint256 tweetId, uint256 newLikeCount);
     event TweetUnliked(address unLiker, address tweetAuthor, uint256 tweetId, uint256 newLikeCount);
-
-    // constructor function to set an owner of contract (called when deploying contract)
-    constructor() {
-        owner = msg.sender;
-    }
-
-    // modifier to allow only the owner to call the function
-    modifier onlyOwner() {
-        require(msg.sender == owner, "YOU ARE NOT THE OWNER");
-        _;
-    }
 
     function createTweet(string memory _tweet) public {
         // conditional
