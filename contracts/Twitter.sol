@@ -4,9 +4,23 @@ pragma solidity 0.8.30;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-// 1️⃣ Import Ownable.sol contract from OpenZeppelin ✅
-// 2️⃣ Inherit Ownable Contract ✅
-// 3️⃣ Replace current onlyOwner ✅
+// 2️⃣ Add a getProfile() function to the interface ✅ 
+// 3️⃣ Initialize the IProfile in the contructor ✅ 
+// HINT: don't forget to include the _profileContract address as a input 
+// 4️⃣ Create a modifier called onlyRegistered that require the msg.sender to have a profile ✅
+// HINT: use the getProfile() to get the user
+// HINT: check if displayName.length > 0 to make sure the user exists
+// 5️⃣ ADD the onlyRegistered modified to createTweet, likeTweet, and unlikeTweet function ✅
+
+interface IProfile {
+    struct UserProfile {
+        string displayName;
+        string bio;
+    }
+    
+    // CODE HERE 👇
+    function getProfile(address _user) external view returns (UserProfile memory);
+}
 
 contract Twitter is Ownable(msg.sender) {
 
@@ -24,13 +38,28 @@ contract Twitter is Ownable(msg.sender) {
 
     // Define a mapping between user addresses and tweets
     mapping(address => Tweet[]) public tweets; // KEY(address) -> VALUE (Tweet)
+
+    // profile contract defined here 👇
+    IProfile profileContract;
     
     // Define the events
     event TweetCreated(uint256 id, address author, string content, uint256 timestamp);
     event TweetLiked(address liker, address tweetAuthor, uint256 tweetId, uint256 newLikeCount);
     event TweetUnliked(address unLiker, address tweetAuthor, uint256 tweetId, uint256 newLikeCount);
 
-    function createTweet(string memory _tweet) public {
+    // create modifier here 👇
+    modifier onlyRegistered() {
+        IProfile.UserProfile memory userProfileTemp = profileContract.getProfile(msg.sender);
+        require(bytes(userProfileTemp.displayName).length > 0, "USER IS NOT REGISTERED!");
+        _;
+    }
+
+    // create constructor here 👇
+    constructor(address _profileContract) {
+        profileContract = IProfile(_profileContract);
+    }
+
+    function createTweet(string memory _tweet) public onlyRegistered {
         // conditional
         // if tweet length <= 280 then we are good, otherwise we revert
         require(bytes(_tweet).length <= MAX_TWEET_LENGTH, "Tweet is too long!");
@@ -62,7 +91,7 @@ contract Twitter is Ownable(msg.sender) {
     }
 
 
-    function likeTweet(address author, uint256 id) external {
+    function likeTweet(address author, uint256 id) external onlyRegistered {
         require(tweets[author][id].id == id, "TWEET DOES NOT EXIST");
 
         tweets[author][id].likes++;
@@ -71,7 +100,7 @@ contract Twitter is Ownable(msg.sender) {
         emit TweetLiked(msg.sender, author, id, tweets[author][id].likes);
     }
 
-    function unLikeTweet(address author, uint256 id) external {
+    function unLikeTweet(address author, uint256 id) external onlyRegistered {
         require(tweets[author][id].id == id, "TWEET DOES NOT EXIST");
         require(tweets[author][id].likes > 0, "TWEET HAS NO LIKES");
 
