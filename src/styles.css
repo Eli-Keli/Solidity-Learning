@@ -160,3 +160,40 @@ button[type="submit"] {
   gap: 10px;
   align-items: flex-start;
 }
+
+.create-profile-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.create-profile-form h2 {
+  color: #1da1f2;
+  margin-bottom: 20px;
+}
+
+.create-profile-form label {
+  color: #65676b;
+  margin-bottom: 5px;
+}
+
+.profile-input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.profile-submit {
+  background-color: #1da1f2;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+}
