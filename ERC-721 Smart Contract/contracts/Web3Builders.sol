@@ -27,9 +27,9 @@ contract Web3Builders is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
         _unpause();
     }
 
-    function safeMint(address to) public onlyOwner returns (uint256) {
+    function publicMint() public returns (uint256) {
         uint256 tokenId = _nextTokenId++;
-        _safeMint(to, tokenId);
+        _safeMint(msg.sender, tokenId);
         return tokenId;
     }
 
