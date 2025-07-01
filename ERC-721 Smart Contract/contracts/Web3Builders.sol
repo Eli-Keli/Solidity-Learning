@@ -10,6 +10,9 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract Web3Builders is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
     uint256 private _nextTokenId;
 
+    // Define maxSupply variable here
+    uint256 maxSupply = 1;
+
     constructor(address initialOwner)
         ERC721("Web3Builders", "WE3")
         Ownable(initialOwner)
@@ -28,8 +31,10 @@ contract Web3Builders is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
     }
     
     // Add Payment requirement -> payable
+    // Add limiting of supply
     function publicMint() public payable returns (uint256) {
         require(msg.value == 0.01 ether, "NO ENOUGH FUNDS");
+        require(totalSupply() < maxSupply, "WE SOLD OUT!");
         uint256 tokenId = _nextTokenId++;
         _safeMint(msg.sender, tokenId);
         return tokenId;
