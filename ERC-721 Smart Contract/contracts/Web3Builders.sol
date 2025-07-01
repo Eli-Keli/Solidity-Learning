@@ -29,6 +29,16 @@ contract Web3Builders is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
     function unpause() public onlyOwner {
         _unpause();
     }
+
+    // Add AllowList Mint
+    function allowListMint() public payable returns (uint256) {
+        require(msg.value == 0.001 ether, "NO ENOUGH FUNDS");
+        require(totalSupply() < maxSupply, "WE SOLD OUT!");
+        
+        uint256 tokenId = _nextTokenId++;
+        _safeMint(msg.sender, tokenId);
+        return tokenId;
+    }
     
     // Add Payment requirement -> payable
     // Add limiting of supply
